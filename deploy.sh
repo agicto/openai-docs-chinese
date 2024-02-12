@@ -9,9 +9,6 @@ set -e
 export PATH="/usr/node/bin:$PATH"
 export NODE="$NODE_PATH"
 
-# 切换到 zsh shell
-exec zsh
-
 # 添加必要的变量和路径配置
 APP_NAME="openaicto"
 APP_PATH="/item/openaicto"
