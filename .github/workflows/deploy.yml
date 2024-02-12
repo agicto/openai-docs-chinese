@@ -32,6 +32,8 @@ jobs:
           # Change to the correct working directory
           cd /item/openaicto
           
+          git pull origin main
+
           # Switch to zsh
           exec zsh
 
