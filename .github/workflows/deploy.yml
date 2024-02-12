@@ -28,6 +28,7 @@ jobs:
         port: ${{ secrets.PORT }}
         script: |
           whoami
+          sudo su -
           # Change to the correct working directory
           cd /item/openaicto
 
