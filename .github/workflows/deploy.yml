@@ -1,0 +1,28 @@
+name: deploy-prod
+
+on:
+  push:
+    branches: ["main"]
+
+env:
+  AZURE_FUNCTIONAPP_NAME: 'your-app-name'  
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'      
+  PYTHON_VERSION: '3.10'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: SSH to remote server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        script: |
+          # Change to the correct working directory
+          cd /item/openaicto
+
+          # Execute the deployment script
+          bash deploy.sh
