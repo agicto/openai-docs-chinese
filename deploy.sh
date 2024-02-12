@@ -7,22 +7,27 @@ echo "Hello from the script"
 
 # 添加 Node.js 到全局环境变量
 export PATH="/usr/bin:$PATH"
-# Switch to zsh within a subshell
-(
-  exec zsh
+# Check if the current shell is zsh
+if [ "$SHELL" != "/bin/zsh" ]; then
+  # Switch to zsh within a subshell
+  (
+    exec zsh
 
-  # Commands in zsh
-  echo "Hello from zsh"
+    # Commands in zsh
+    echo "Hello from zsh"
 
-  # Check if the symbolic link already exists
-  if [ ! -e /usr/bin/node ]; then
-    # Create the symbolic link
-    ln -s /usr/node/bin/node /usr/bin/node
-  else
-    echo "Symbolic link /usr/bin/node already exists. Skipping ln."
-  fi
+    # Check if the symbolic link already exists
+    if [ ! -e /usr/bin/node ]; then
+      # Create the symbolic link
+      ln -s /usr/node/bin/node /usr/bin/node
+    else
+      echo "Symbolic link /usr/bin/node already exists. Skipping ln."
+    fi
 
-)  # End of subshell
+  )  # End of subshell
+else
+  echo "Already in zsh. Skipping switch and commands."
+fi
 
 # 添加必要的变量和路径配置
 APP_NAME="openaicto"
