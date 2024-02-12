@@ -1,6 +1,9 @@
 #!/bin/bash
 
 set -e
+set -x
+
+echo "Hello from the script"
 
 # 添加 Node.js 到全局环境变量
 # export PATH="/usr/bin:$PATH"
@@ -52,3 +55,5 @@ $PNPM_PATH run build
 # 使用 pm2 重启应用程序
 echo "Restarting $APP_NAME with PM2..."
 $PM2_PATH restart $APP_NAME
+
+echo "Script executed successfully"
