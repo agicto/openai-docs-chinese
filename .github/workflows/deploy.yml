@@ -40,6 +40,8 @@ jobs:
 
     - name: Output System Info
       run: |
+        # Switch to zsh
+        exec zsh
         echo "current user:"
         whoami
         echo "Node.js version:"
