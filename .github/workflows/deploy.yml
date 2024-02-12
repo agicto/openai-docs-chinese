@@ -17,7 +17,10 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '18.18.2'  # Change this to the version you need
+        node-version: '18.18.2'
+      
+    - name: SSH to remote server
+      uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
