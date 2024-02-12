@@ -35,16 +35,13 @@ jobs:
           git pull origin main
 
           # Switch to zsh
-          exec zsh
+          (
+            exec zsh
 
-          echo "current user:"
-          whoami
-          echo "Node.js version:"
-          node -v
-          echo "PM2 version:"
-          pm2 -v
-          echo "Environment variables:"
-          printenv
+            # Commands in zsh
+            echo "Hello from zsh"
+
+          )  # End of subshell
 
           # Execute the deployment script
           sh deploy.sh
