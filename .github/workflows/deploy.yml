@@ -3,6 +3,7 @@ name: deploy-prod
 on:
   push:
     branches: ["main"]
+  workflow_dispatch:
 
 env:
   AZURE_FUNCTIONAPP_NAME: 'your-app-name'  
