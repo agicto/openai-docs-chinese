@@ -14,16 +14,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Output System Info
-      run: |
-        echo "current user:"
-        whoami
-        echo "Node.js version:"
-        node -v
-        echo "PM2 version:"
-        pm2 -v
-        echo "Environment variables:"
-        printenv
+
 
     - name: SSH to remote server
       uses: appleboy/ssh-action@master
@@ -39,3 +30,13 @@ jobs:
 
           # Execute the deployment script
           sh deploy.sh
+      - name: Output System Info
+        run: |
+          echo "current user:"
+          whoami
+          echo "Node.js version:"
+          node -v
+          echo "PM2 version:"
+          pm2 -v
+          echo "Environment variables:"
+          printenv
