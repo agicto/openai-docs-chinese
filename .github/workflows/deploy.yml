@@ -14,8 +14,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-
-
     - name: SSH to remote server
       uses: appleboy/ssh-action@master
       with:
