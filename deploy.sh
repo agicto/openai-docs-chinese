@@ -8,7 +8,7 @@ echo "Hello from the script"
 # 添加 Node.js 到全局环境变量
 export PATH="/usr/bin:$PATH"
 # Check if the current shell is zsh
-if [ "$SHELL" != "/bin/zsh" ]; then
+if [ "$SHELL" != "/usr/bin/zsh" ]; then
   # Switch to zsh within a subshell
   (
     exec zsh
