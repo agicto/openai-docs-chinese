@@ -14,6 +14,17 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+    - name: Output System Info
+    run: |
+      echo "current user:"
+      whoami
+      echo "Node.js version:"
+      node -v
+      echo "PM2 version:"
+      pm2 -v
+      echo "Environment variables:"
+      printenv
+
     - name: SSH to remote server
       uses: appleboy/ssh-action@master
       with:
@@ -22,6 +33,7 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
         script: |
+          whoami
           # Change to the correct working directory
           cd /item/openaicto
 
