@@ -6,9 +6,6 @@ set -e
 # export PATH="/usr/bin:$PATH"
 # ln -s /usr/node/bin/node /usr/bin/node
 
-# export PATH="/usr/node/bin:$PATH"
-# export NODE="$NODE_PATH"
-
 # 添加必要的变量和路径配置
 APP_NAME="openaicto"
 APP_PATH="/item/openaicto"
@@ -22,7 +19,6 @@ cd $APP_PATH
 
 # 检查是否已经初始化 PM2
 if $PM2_PATH status $APP_NAME | grep -q "online"; then
-    # pm2 status openaicto | grep -q "online";
   echo "PM2 process $APP_NAME already running. Skipping start..."
 else
   # 第一次启动，添加 Next.js 项目到 PM2
