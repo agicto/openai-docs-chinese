@@ -28,13 +28,14 @@ jobs:
 
           # Execute the deployment script
           sh deploy.sh
-      - name: Output System Info
-        run: |
-          echo "current user:"
-          whoami
-          echo "Node.js version:"
-          node -v
-          echo "PM2 version:"
-          pm2 -v
-          echo "Environment variables:"
-          printenv
+
+    - name: Output System Info
+      run: |
+        echo "current user:"
+        whoami
+        echo "Node.js version:"
+        node -v
+        echo "PM2 version:"
+        pm2 -v
+        echo "Environment variables:"
+        printenv
