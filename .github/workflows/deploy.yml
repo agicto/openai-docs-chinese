@@ -26,4 +26,4 @@ jobs:
           cd /item/openaicto
 
           # Execute the deployment script
-          bash deploy.sh
+          sh deploy.sh
