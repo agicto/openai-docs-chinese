@@ -34,14 +34,5 @@ jobs:
           
           git pull origin main
 
-          # Switch to zsh
-          (
-            exec zsh
-
-            # Commands in zsh
-            echo "Hello from zsh"
-
-          )  # End of subshell
-
           # Execute the deployment script
           sh deploy.sh
