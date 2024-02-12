@@ -119,6 +119,11 @@ function SmallPrint() {
     <div className="flex flex-col items-center justify-between gap-5 border-t border-zinc-900/5 pt-8 dark:border-white/5 sm:flex-row">
       <p className="text-xs text-zinc-600 dark:text-zinc-400">
         &copy; Copyright {new Date().getFullYear()}. All rights reserved.
+
+        <a className="ml-6" target="_blank" rel="noreferrer" href="https://agicto.com">
+          AGICTO.
+        </a>
+        AGICTO.
         <a className="ml-6" target="_blank" rel="noreferrer" href="https://beian.miit.gov.cn">
           冀ICP备2023005620号-6
         </a>
