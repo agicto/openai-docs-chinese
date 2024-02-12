@@ -6,6 +6,8 @@ set -e
 # export PATH="/usr/bin:$PATH"
 # ln -s /usr/node/bin/node /usr/bin/node
 
+export PATH="/usr/node/bin:$PATH"
+
 # 添加必要的变量和路径配置
 APP_NAME="openaicto"
 APP_PATH="/item/openaicto"
