@@ -32,7 +32,7 @@ jobs:
           cd /item/openaicto
 
           # Execute the deployment script
-          sh deploy.sh
+          # sh deploy.sh
 
     - name: Output System Info
       run: |
