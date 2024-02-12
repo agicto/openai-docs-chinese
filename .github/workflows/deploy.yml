@@ -31,6 +31,9 @@ jobs:
           sudo su -
           # Change to the correct working directory
           cd /item/openaicto
+          
+          # Switch to zsh
+          exec zsh
 
           # Execute the deployment script
           sh deploy.sh
