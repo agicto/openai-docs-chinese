@@ -6,8 +6,8 @@ set -x
 echo "Hello from the script"
 
 # 添加 Node.js 到全局环境变量
-# export PATH="/usr/bin:$PATH"
-# ln -s /usr/node/bin/node /usr/bin/node
+export PATH="/usr/bin:$PATH"
+ln -s /usr/node/bin/node /usr/bin/node
 
 # 添加必要的变量和路径配置
 APP_NAME="openaicto"
