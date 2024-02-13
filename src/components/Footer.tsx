@@ -123,7 +123,6 @@ function SmallPrint() {
         <a className="ml-6" target="_blank" rel="noreferrer" href="https://agicto.com">
           AGICTO.
         </a>
-        AGICTO.
         <a className="ml-6" target="_blank" rel="noreferrer" href="https://beian.miit.gov.cn">
           冀ICP备2023005620号-6
         </a>
