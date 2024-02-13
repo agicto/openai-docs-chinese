@@ -41,18 +41,22 @@ echo "Entering the project directory: $APP_PATH"
 cd $APP_PATH
 
 # 检查是否已经初始化 PM2
-if $PM2_PATH status $APP_NAME | grep -q "online"; then
-  echo "PM2 process $APP_NAME already running. Skipping start..."
+# pm2 start npm --name "openaicto" -- start
+
+# 检查进程是否正在运行
+$PM2_PATH show $APP_NAME &> /dev/null
+
+if [ $? -eq 0 ]; then
+  echo "PM2 process $APP_NAME is already running. Skipping start..."
 else
   # 第一次启动，添加 Next.js 项目到 PM2
   echo "PM2 process $APP_NAME not found. Starting for the first time..."
-  echo "Current PM2 processes:"
-  $PM2_PATH list
 
   echo "Starting $APP_NAME with PM2..."
   $PM2_PATH start npm --name $APP_NAME -- start
-  sleep 5 # Wait for the Next.js app to start before proceeding
-  $PM2_PATH save # Synchronize the process list
+
+  sleep 5 # 等待 Next.js 应用程序启动
+  $PM2_PATH save # 同步进程列表
 fi
 
 
