@@ -44,7 +44,10 @@ cd $APP_PATH
 # pm2 start npm --name "openaicto" -- start
 
 # 检查进程是否正在运行
-$PM2_PATH show $APP_NAME &> /dev/null
+$PM2_PATH show $APP_NAME
+
+# 输出调试信息
+echo "Exit Status: $?"
 
 if [ $? -eq 0 ]; then
   echo "PM2 process $APP_NAME is already running. Skipping start..."
