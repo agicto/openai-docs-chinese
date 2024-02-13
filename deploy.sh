@@ -7,13 +7,13 @@ echo "Hello from the script"
 
 # 添加 Node.js 到全局环境变量
 export PATH="/usr/bin:$PATH"
+
 # Check if the current shell is zsh
 if [ "$SHELL" != "/usr/bin/zsh" ]; then
   # Switch to zsh within a subshell
   (
     exec zsh
 
-    # Commands in zsh
     echo "Hello from zsh"
 
     # Check if the symbolic link already exists
@@ -40,29 +40,6 @@ NODE_PATH="/usr/node/bin/node"
 echo "Entering the project directory: $APP_PATH"
 cd $APP_PATH
 
-# 检查是否已经初始化 PM2
-# pm2 start npm --name "openaicto" -- start
-
-# 检查进程是否正在运行
-$PM2_PATH show $APP_NAME
-
-# 输出调试信息
-echo "Exit Status: $?"
-
-if [ $? -eq 0 ]; then
-  echo "PM2 process $APP_NAME is already running. Skipping start..."
-else
-  # 第一次启动，添加 Next.js 项目到 PM2
-  echo "PM2 process $APP_NAME not found. Starting for the first time..."
-
-  echo "Starting $APP_NAME with PM2..."
-  $PM2_PATH start npm --name $APP_NAME -- start
-
-  sleep 5 # 等待 Next.js 应用程序启动
-  $PM2_PATH save # 同步进程列表
-fi
-
-
 # 切换到主分支
 echo "Switching to the main branch..."
 git checkout main
@@ -79,8 +56,15 @@ $PNPM_PATH install
 echo "Building the project with pnpm..."
 $PNPM_PATH run build
 
-# 使用 pm2 重启应用程序
-echo "Restarting $APP_NAME with PM2..."
-$PM2_PATH restart $APP_NAME
+# 检查 PM2 是否已经启动应用程序
+echo "Checking if $APP_NAME is already running with PM2..."
+if $PM2_PATH show $APP_NAME > /dev/null 2>&1; then
+  echo "$APP_NAME is already running. Restarting with PM2..."
+  $PM2_PATH restart $APP_NAME
+else
+  echo "$APP_NAME is not running. Starting with PM2..."
+  $PM2_PATH start npm --name "$APP_NAME" -- start
+fi
+
 
 echo "Script executed successfully"
