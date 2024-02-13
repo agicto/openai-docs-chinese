@@ -63,7 +63,7 @@ if $PM2_PATH show $APP_NAME > /dev/null 2>&1; then
   $PM2_PATH restart $APP_NAME
 else
   echo "$APP_NAME is not running. Starting with PM2..."
-  $PM2_PATH start npm --name "$APP_NAME" -- start
+  $PM2_PATH start ecosystem.config.js
 fi
 
 
