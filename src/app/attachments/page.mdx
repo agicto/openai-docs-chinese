@@ -4,360 +4,223 @@ export const metadata = {
     'On this page, we’ll dive into the different attachment endpoints you can use to manage attachments programmatically.',
 }
 
-# Attachments
-
-Attachments are how you share things in Protocol — they allow you to send all sorts of files to your contacts and groups. On this page, we'll dive into the different attachment endpoints you can use to manage attachments programmatically. We'll look at how to query, upload, update, and delete attachments. {{ className: 'lead' }}
-
-## The attachment model
-
-The attachment model contains all the information about the files you send to your contacts and groups, including the name, type, and size.
-
-### Properties
-
-<Properties>
-  <Property name="id" type="string">
-    Unique identifier for the attachment.
-  </Property>
-  <Property name="message_id" type="string">
-    Unique identifier for the message associated with the attachment.
-  </Property>
-  <Property name="filename" type="string">
-    The filename for the attachment.
-  </Property>
-  <Property name="file_url" type="string">
-    The URL for the attached file.
-  </Property>
-  <Property name="file_type" type="string">
-    The MIME type of the attached file.
-  </Property>
-  <Property name="file_size" type="integer">
-    The file size of the attachment in bytes.
-  </Property>
-  <Property name="created_at" type="timestamp">
-    Timestamp of when the attachment was created.
-  </Property>
-</Properties>
-
----
-
-## List all attachments {{ tag: 'GET', label: '/v1/attachments' }}
-
-<Row>
-  <Col>
-
-    This endpoint allows you to retrieve a paginated list of all your attachments (in a conversation if a conversation id is provided). By default, a maximum of ten attachments are shown per page.
-
-    ### Optional attributes
-
-    <Properties>
-      <Property name="conversation_id" type="string">
-        Limit to attachments from a given conversation.
-      </Property>
-      <Property name="limit" type="integer">
-        Limit the number of attachments returned.
-      </Property>
-    </Properties>
+# 开发者快速入门
 
-  </Col>
-  <Col sticky>
+## 使用 OpenAI API 快速入门
 
-    <CodeGroup title="Request" tag="GET" label="/v1/attachments">
+OpenAI API 提供了一个简单的界面，让开发者能够在其应用中创建一个智能层，由 OpenAI 的最新模型驱动。Chat Completions 端点是 ChatGPT 的基础，提供了一种简单的方法来使用类似 GPT-4 的模型将文本作为输入并生成输出。
 
-    ```bash {{ title: 'cURL' }}
-    curl -G https://api.protocol.chat/v1/attachments \
-      -H "Authorization: Bearer {token}" \
-      -d conversation_id="xgQQXg3hrtjh7AvZ" \
-      -d limit=10
-    ```
+[查看 API 参考](/docs/api-reference)
 
-    ```js
-    import ApiClient from '@example/protocol-api'
+如果您是一名经验丰富的开发者或希望直接了解如何使用 OpenAI API，那么 API 参考或文本生成指南是开始的好地方。在本快速入门中，您将学习：
 
-    const client = new ApiClient(token)
+- 如何设置您的开发环境
+- 如何安装最新的 SDK
+- OpenAI API 的一些基本概念
+- 如何发送您的第一个 API 请求
 
-    await client.attachments.list()
-    ```
+如果您在开始使用 OpenAI API 时遇到任何问题或有任何疑问，请加入我们的[开发者社区](https://community.openai.com)。
 
-    ```python
-    from protocol_api import ApiClient
+## 账户设置
 
-    client = ApiClient(token)
-
-    client.attachments.list()
-    ```
-
-    ```php
-    $client = new \Protocol\ApiClient($token);
+首先，创建一个 [OpenAI 账户](/signup) 或 [登录](/login)。然后，导航到 [API 密钥页面](/account/api-keys)，点击“创建新的密钥”，可选地为密钥命名。请确保将其保存在安全的地方，并且不要与任何人分享。
 
-    $client->attachments->list();
-    ```
+## 快速入门语言选择
 
-    </CodeGroup>
+选择要使用 OpenAI API 的工具或语言。
 
-    ```json {{ title: 'Response' }}
-    {
-      "has_more": false,
-      "data": [
-        {
-          "id": "Nc6yKKMpcxiiFxp6",
-          "message_id": "LoPsJaMcPBuFNjg1",
-          "filename": "Invoice_room_service__Plaza_Hotel.pdf",
-          "file_url": "https://assets.protocol.chat/attachments/Invoice_room_service__Plaza_Hotel.pdf",
-          "file_type": "application/pdf",
-          "file_size": 21352,
-          "created_at": 692233200
-        },
-        {
-          "id": "hSIhXBhNe8X1d8Et"
-          // ...
-        }
-      ]
-    }
-    ```
+<div class="content-switcher">
+<div class="css-1s5pj89">
+<button type="button" tabindex="0" class="btn btn-sm btn-outlined btn-primary" aria-pressed="false">
+<span class="btn-label-wrap">
+<span class="btn-label-inner">curl‍</span>
+</span>
+</button>
+<button type="button" tabindex="0" class="btn btn-sm btn-filled btn-primary" aria-pressed="true">
+<span class="btn-label-wrap">
+<span class="btn-label-inner">Python‍</span>
+</span>
+</button>
+<button type="button" tabindex="0" class="btn btn-sm btn-outlined btn-primary" aria-pressed="false">
+<span class="btn-label-wrap">
+<span class="btn-label-inner">Node.js‍</span>
+</span>
+</button>
+</div>
+</div>
 
-  </Col>
-</Row>
+Python 是一种流行的编程语言，常用于数据应用、Web 开发和许多其他编程任务，因为它易于使用。OpenAI 提供了一个[定制的 Python 库](https://github.com/openai/openai-python)，使在 Python 中使用 OpenAI API 变得简单高效。
 
----
+## 步骤 1：设置 Python
 
-## Create an attachment {{ tag: 'POST', label: '/v1/attachments' }}
+### 安装 Python
 
-<Row>
-  <Col>
+要使用 OpenAI Python 库，您需要确保已安装 Python。一些计算机预先安装了 Python，而其他计算机则需要您自己设置。要测试是否已安装 Python，请导航到终端或命令行：
 
-    This endpoint allows you to upload a new attachment to a conversation. See the code examples for how to send the file to the Protocol API.
+- MacOS：打开终端：您可以在应用程序文件夹中找到它，或使用 Spotlight（Command + Space）进行搜索。
+- Windows：打开命令提示符：您可以在启动菜单中搜索“cmd”。
 
-    ### Required attributes
+然后，输入单词 `python`，然后按回车/enter。如果您进入了 Python 解释器，那么您的计算机上已安装了 Python，可以进行下一步。如果您收到类似于“Error: command python not found”的错误消息，那么您可能需要安装 Python 并使其在终端/命令行中可用。
 
-    <Properties>
-      <Property name="file" type="string">
-        The file you want to add as an attachment.
-      </Property>
-    </Properties>
+要下载 Python，请访问 [官方 Python 网站](https://www.python.org/downloads/) 并下载最新版本。要使用 OpenAI Python 库，您需要至少安装 Python 3.7.1 或更高版本。如果您是第一次安装 Python，可以遵循 [官方 Python 安装指南](https://wiki.python.org/moin/BeginnersGuide/Download) 进行操作。
 
-  </Col>
-  <Col sticky>
+### 设置虚拟环境（可选）
 
-    <CodeGroup title="Request" tag="POST" label="/v1/attachments">
+一旦安装了 Python，创建虚拟 Python 环境来安装 OpenAI Python 库是一个好习惯。虚拟环境提供了一个干净的工作空间，用于安装 Python 包，以避免与其他项目中安装的库发生冲突。如果您正在第一次使用 Python，可以遵循 [官方 Python 虚拟环境指南](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/) 进行操作。
 
-    ```bash {{ title: 'cURL' }}
-    curl https://api.protocol.chat/v1/attachments \
-      -H "Authorization: Bearer {token}" \
-      -F file="../Invoice_room_service__Plaza_Hotel.pdf"
-    ```
+要创建虚拟环境，Python 提供了一个内置的 `venv` 模块，它提供了虚拟环境所需的基本功能。运行以下命令将在当前文件夹中创建一个名为“openai-env”的虚拟环境：
 
-    ```js
-    import ApiClient from '@example/protocol-api'
+```bash
+python -m venv openai-env
+```
 
-    const client = new ApiClient(token)
+创建虚拟环境后，需要激活它。在 Windows 上，运行：
 
-    await client.attachments.create({ file })
-    ```
+```bash
+openai-env\Scripts\activate
+```
 
-    ```python
-    from protocol_api import ApiClient
+在 Unix 或 MacOS 上，运行：
 
-    client = ApiClient(token)
+```bash
+source openai-env/bin/activate
+```
 
-    client.attachments.create(file=file)
-    ```
+您应该看到终端/命令行界面发生了轻微的变化，现在左侧显示“openai-env”。有关使用虚拟环境的更多详细信息，请参阅 [官方 Python 文档](https://docs.python.org/3/tutorial/venv.html#creating-virtual-environments)。
 
-    ```php
-    $client = new \Protocol\ApiClient($token);
+### 安装 OpenAI Python 库
 
-    $client->attachments->create([
-      'file' => $file,
-    ]);
-    ```
+一旦安装了 Python 3.7.1 或更高版本，并且（可选）设置了虚拟环境，就可以安装 OpenAI Python 库了。从终端/命令行运行：
 
-    </CodeGroup>
+```bash
+pip install --upgrade openai
+```
 
-    ```json {{ title: 'Response' }}
-    {
-      "id": "Nc6yKKMpcxiiFxp6",
-      "message_id": "LoPsJaMcPBuFNjg1",
-      "filename": "Invoice_room_service__Plaza_Hotel.pdf",
-      "file_url": "https://assets.protocol.chat/attachments/Invoice_room_service__Plaza_Hotel.pdf",
-      "file_type": "application/pdf",
-      "file_size": 21352,
-      "created_at": 692233200
-    }
-    ```
+完成后，运行 `pip list` 将显示您在当前环境中安装的 Python 库，其中应该包含 OpenAI Python 库。
 
-  </Col>
-</Row>
+## 步骤 2：设置您的 API 密钥
 
----
+### 设置您的 API 密钥以供所有项目使用（推荐）
 
-## Retrieve an attachment {{ tag: 'GET', label: '/v1/attachments/:id' }}
+将 API 密钥设置为所有项目可访问的主要优势是 Python 库会自动检测并使用它，而无需编写任何代码。
 
-<Row>
-  <Col>
+#### MacOS
 
-    This endpoint allows you to retrieve an attachment by providing the attachment id. Refer to [the list](#the-attachment-model) at the top of this page to see which properties are included with attachment objects.
+1. **打开终端**：您可以在应用程序文件夹中找到它，或使用 Spotlight（Command + Space）进行搜索。
+2. **编辑 Bash 配置文件**：使用命令 `nano ~/.bash_profile` 或 `nano ~/.zshrc`（对于较新的 MacOS 版本）打开配置文件进行编辑。
+3. **添加环境变量**：在编辑器中，添加以下行，将 `your-api-key-here` 替换为实际的 API 密钥：
 
-  </Col>
-  <Col sticky>
+```bash
+export OPENAI_API_KEY='your-api-key-here'
+```
 
-    <CodeGroup title="Request" tag="GET" label="/v1/attachments/Nc6yKKMpcxiiFxp6">
+4. **保存并退出**：按 Ctrl+O 写入更改，然后按 Ctrl+X 关闭编辑器。
+5. **加载您的配置文件**：使用命令 `source ~/.bash_profile` 或 `source ~/.zshrc` 加载更新后的配置文件。
+6. **验证**：在终端中键入 `echo $OPENAI_API_KEY` 应该显示您的 API 密钥。
 
-    ```bash {{ title: 'cURL' }}
-    curl https://api.protocol.chat/v1/attachments/Nc6yKKMpcxiiFxp6 \
-      -H "Authorization: Bearer {token}"
-    ```
+#### Windows
 
-    ```js
-    import ApiClient from '@example/protocol-api'
+1. **打开命令提示符**：您可以在启动菜单中搜索“cmd”。
+2. **设置环境变量**：在当前会话中，使用以下命令设置环境变量，将 `your-api-key-here` 替换为实际的 API 密钥：
 
-    const client = new ApiClient(token)
+```bash
+setx OPENAI_API_KEY "your-api-key-here"
+```
 
-    await client.attachments.get('Nc6yKKMpcxiiFxp6')
-    ```
+3. **永久设置**：要使设置永久生效，请通过系统属性将变量添加到系统环境变量中：
+	1. 右键单击“此电脑”或“我的电脑”，然后选择“属性”。
+	2. 单击“高级系统设置”。
+	3. 单击“环境变量”按钮。
+	4. 在“系统变量”部分中，单击“新建...”，然后将 `OPENAI_API_KEY` 作为变量名称，您的 API 密钥作为变量值。
+4. **验证**：重新打开命令提示符，然后键入 `echo %OPENAI_API_KEY%` 应该显示您的 API 密钥。
 
-    ```python
-    from protocol_api import ApiClient
+### 为单个项目设置您的 API 密钥
 
-    client = ApiClient(token)
+如果您只希望 API 密钥对单个项目可访问，可以创建一个本地 `.env` 文件，其中包含 API 密钥，然后使用 Python 代码显式使用该 API 密钥。
 
-    client.attachments.get("Nc6yKKMpcxiiFxp6")
-    ```
+首先，导航到要创建 `.env` 文件的项目文件夹。然后，使用终端或集成开发环境（IDE）创建一个名为 `.env` 的文件。
 
-    ```php
-    $client = new \Protocol\ApiClient($token);
+请注意，为了防止您的 `.env` 文件被版本控制系统无意中分享，请在项目根目录中创建一个 `.gitignore` 文件，并在其中添加一行 `.env`。
 
-    $client->attachments->get('Nc6yKKMpcxiiFxp6');
-    ```
+一旦创建了 `.env` 文件，请将 API 密钥设置为 `OPENAI_API_KEY`：
 
-    </CodeGroup>
+```makefile
+# 将您的 API 密钥粘贴在此处。请勿与任何人分享！API 密钥应保持私密。
+OPENAI_API_KEY=abc123
+```
 
-    ```json {{ title: 'Response' }}
-    {
-      "id": "Nc6yKKMpcxiiFxp6",
-      "message_id": "LoPsJaMcPBuFNjg1",
-      "filename": "Invoice_room_service__Plaza_Hotel.pdf",
-      "file_url": "https://assets.protocol.chat/attachments/Invoice_room_service__Plaza_Hotel.pdf",
-      "file_type": "application/pdf",
-      "file_size": 21352,
-      "created_at": 692233200
-    }
-    ```
+然后，可以使用以下 Python 代码导入 API 密钥：
 
-  </Col>
-</Row>
+```python
+from openai import OpenAI
 
----
+client = OpenAI()
+```
 
-## Update an attachment {{ tag: 'PUT', label: '/v1/attachments/:id' }}
+默认情况下，`OpenAI` 类将使用 `os.environ.get("OPENAI_API_KEY")` 自动检索 API 密钥。如果您将密钥保存在不同的环境变量名称下，可以这样做：
 
-<Row>
-  <Col>
+```python
+from openai import OpenAI
+import os
 
-    This endpoint allows you to perform an update on an attachment. Currently, the only supported type of update is changing the filename.
+client = OpenAI(
+    api_key=os.environ.get("CUSTOM_ENV_NAME"),
+)
+```
 
-    ### Optional attributes
+## 步骤 3：发送您的第一个 API 请求
 
-    <Properties>
-      <Property name="filename" type="string">
-        The new filename for the attachment.
-      </Property>
-    </Properties>
+### 创建请求
 
-  </Col>
-  <Col sticky>
+创建一个名为 `openai_test.py` 的文件，并在其中粘贴以下代码：
 
-    <CodeGroup title="Request" tag="PUT" label="/v1/attachments/Nc6yKKMpcxiiFxp6">
+```python
+from openai import OpenAI
 
-    ```bash {{ title: 'cURL' }}
-    curl -X PUT https://api.protocol.chat/v1/attachments/Nc6yKKMpcxiiFxp6 \
-      -H "Authorization: Bearer {token}" \
-      -d filename="Invoice_room_service__Plaza_Hotel_updated.pdf"
-    ```
+client = OpenAI()
 
-    ```js
-    import ApiClient from '@example/protocol-api'
+response = client.completions.create(
+    engine="davinci",
+    prompt="Write a Python function to calculate the factorial of a number",
+    max_tokens=100,
+    n=1,
+    stop=None,
+    temperature=0.7,
+)
 
-    const client = new ApiClient(token)
+print(response.choices[0].text)
+```
 
-    await client.attachments.update('Nc6yKKMpcxiiFxp6', {
-      filename: 'Invoice_room_service__Plaza_Hotel_updated.pdf',
-    })
-    ```
+在此示例中，我们使用 `completions.create` 方法向 OpenAI API 发送请求。我们将 `engine` 参数设置为 `davinci`，这是 OpenAI 提供的最强大的模型之一。我们还设置了 `prompt` 参数，要求模型编写一个计算数字阶乘的 Python 函数。
 
-    ```python
-    from protocol_api import ApiClient
+`max_tokens` 参数控制生成的文本的最大长度，`n` 参数控制生成的结果数量，`stop` 参数用于停止生成的文本，`temperature` 参数控制生成的文本的随机性。
 
-    client = ApiClient(token)
+### 运行请求
 
-    client.attachments.update("Nc6yKKMpcxiiFxp6", filename="Invoice_room_service__Plaza_Hotel_updated.pdf")
-    ```
+要运行请求，请在终端/命令行中导航到包含 `openai_test.py` 文件的目录，然后运行：
 
-    ```php
-    $client = new \Protocol\ApiClient($token);
+```bash
+python openai_test.py
+```
 
-    $client->attachments->update('Nc6yKKMpcxiiFxp6', [
-      'filename' => 'Invoice_room_service__Plaza_Hotel_updated.pdf',
-    ]);
-    ```
+如果一切顺利，您应该会看到模型生成的 Python 函数，用于计算数字的阶乘：
 
-    </CodeGroup>
+```python
+def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)
+```
 
-    ```json {{ title: 'Response' }}
-    {
-      "id": "Nc6yKKMpcxiiFxp6",
-      "message_id": "LoPsJaMcPBuFNjg1",
-      "filename": "Invoice_room_service__Plaza_Hotel.pdf",
-      "file_url": "https://assets.protocol.chat/attachments/Invoice_room_service__Plaza_Hotel_updated.pdf",
-      "file_type": "application/pdf",
-      "file_size": 21352,
-      "created_at": 692233200
-    }
-    ```
+## 后续步骤
 
-  </Col>
-</Row>
+现在，您已经成功地使用 OpenAI API 生成了文本！以下是一些后续步骤，以帮助您深入了解 OpenAI API 的功能：
 
----
+1. 查看 [OpenAI API 参考](/docs/api-reference)，了解有关可用端点和参数的更多信息。
+2. 查看 [OpenAI API 指南](/docs/guides)，了解如何使用 OpenAI API 进行文本生成、翻译、语义搜索等任务。
+3. 查看 [OpenAI API 示例](/docs/examples)，了解使用 OpenAI API 的实际应用。
+4. 加入 [OpenAI 社区](https://community.openai.com)，与其他开发者分享您的项目，并获得帮助和反馈。
+5. 查看 [OpenAI 的使用政策](https://openai.com/policies/usage-policies)，了解如何负责任地使用 OpenAI API。
 
-## Delete an attachment {{ tag: 'DELETE', label: '/v1/attachments/:id' }}
-
-<Row>
-  <Col>
-
-    This endpoint allows you to delete attachments. Note: This will permanently delete the file.
-
-  </Col>
-  <Col sticky>
-
-    <CodeGroup title="Request" tag="DELETE" label="/v1/attachments/Nc6yKKMpcxiiFxp6">
-
-    ```bash {{ title: 'cURL' }}
-    curl -X DELETE https://api.protocol.chat/v1/attachments/Nc6yKKMpcxiiFxp6 \
-      -H "Authorization: Bearer {token}"
-    ```
-
-    ```js
-    import ApiClient from '@example/protocol-api'
-
-    const client = new ApiClient(token)
-
-    await client.attachments.delete('Nc6yKKMpcxiiFxp6')
-    ```
-
-    ```python
-    from protocol_api import ApiClient
-
-    client = ApiClient(token)
-
-    client.attachments.delete("Nc6yKKMpcxiiFxp6")
-    ```
-
-    ```php
-    $client = new \Protocol\ApiClient($token);
-
-    $client->attachments->delete('Nc6yKKMpcxiiFxp6');
-    ```
-
-    </CodeGroup>
-
-  </Col>
-</Row>
+祝您使用 OpenAI API 愉快！如果您有任何问题或需要帮助，请随时联系我们。
