@@ -243,6 +243,12 @@ export const navigation: Array<NavGroup> = [
     ],
   },
   {
+    title: 'Capabilities',
+    links: [
+      { title: '文本生成', href: '/capabilities/text-generation' },
+    ],
+  },
+  {
     title: 'Resources',
     links: [
       { title: 'Contacts', href: '/contacts' },

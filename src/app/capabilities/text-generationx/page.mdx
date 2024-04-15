@@ -1,0 +1,219 @@
+export const metadata = {
+  title: 'Text generation models',
+  description:
+    'In this guide, we’ll look at how authentication works. Protocol offers two ways to authenticate your API requests: Basic authentication and OAuth2 with a token.',
+}
+
+
+# Text generation models
+
+OpenAI 的文本生成模型（通常被称为生成式先进的变压器或大型语言模型）已经被训练以理解自然语言、代码和图像。这些模型提供文本输出作为对其输入的响应。这些模型的输入也被称为“提示”。设计提示 essentially 是如何“编程”大型语言模型模型，通常通过提供指令或成功完成任务的一些示例来实现。
+
+使用 OpenAI 的文本生成模型，您可以构建应用程序来：
+
+- 草稿文件
+- 写计算机代码
+- 回答有关知识库的问题
+- 分析文本
+- 给软件一个自然语言界面
+- 在各种主题中进行教学
+- 翻译语言
+- 模拟游戏中的角色
+
+与发布 `gpt-4-turbo` 同时，您现在还可以使用这些模型来处理和理解图像。
+
+注意：`gpt-4` 和 `gpt-3.5-turbo` 模型目前处于预览阶段，可能会更改，并且可能不会按预期工作。
+
+有关详细信息，请参阅[视觉指南](/docs/guides/vision)。
+
+要使用这些模型，您可以通过 OpenAI API 发送包含输入和 API 密钥的请求，并接收包含模型输出的响应。我们最新的模型 `gpt-4`、`gpt-4-turbo-preview` 和 `gpt-3.5-turbo` 通过聊天完成 API 端点提供。
+
+| Model Families | API Endpoint |
+| --- | --- |
+| Newer Models (2023–) | [API Link](https://api.openai.com/v1/chat/completions) |
+| Updated Legacy Models (2023) | [API Link](https://api.openai.com/v1/completions) |
+
+
+如果您不确定使用哪个模型，请使用 `gpt-4-turbo` 或 `gpt-3.5-turbo`。
+
+您可以在[聊天游乐场](https://platform.openai.com/playground?mode=chat)中尝试各种模型。
+
+## Chat Completions API
+
+Chat 模型采用消息列表作为输入，并返回模型生成的消息作为输出。虽然聊天格式旨在使多轮对话易于实现，但它也适用于单轮任务，而无需进行对话。
+
+一个 Chat Completions API 调用如下所示：
+```python
+import openai
+
+openai.api_key = "sk-your-api-key"
+
+response = openai.ChatCompletion.create(
+  model="gpt-3.5-turbo",
+  messages=[
+    {"role": "system", "content": "You are a helpful assistant."},
+    {"role": "user", "content": "Who won the world series in 2020?"},
+    {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."},
+    {"role": "user", "content": "Where was it played?"}
+  ]
+)
+```
+要模拟 ChatGPT 中看到的效果，其中文本逐步返回，请将 `stream` 参数设置为 `true`。
+
+### Chat Completions response format
+
+一个 Chat Completions API 响应如下所示：
+```json
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "The 2020 World Series was played in Texas at Globe Life Field in Arlington.",
+        "role": "assistant"
+      },
+      "logprobs": null
+    }
+  ],
+  "created": 1677664795,
+  "id": "chatcmpl-7QyqpwdfhqwajicIEznoc6Q47XAyW",
+  "model": "gpt-3.5-turbo-0613",
+  "object": "chat.completion",
+  "usage": {
+    "completion_tokens": 17,
+    "prompt_tokens": 57,
+    "total_tokens": 74
+  }
+}
+```
+助手的回复可以使用以下方式提取：
+```python
+completion.choices[0].message.content
+```
+每个响应都将包含一个 `finish_reason`。`finish_reason` 的可能值为：
+
+- `stop`：API 返回完整的消息，或由提供的停止序列中的一个终止的消息
+- `length`：模型输出不完整，原因可能是由于 `max_tokens` 参数或令牌限制
+- `function_call`：模型决定调用函数
+- `content_filter`：内容因我们的内容过滤器的标志而被省略
+- `null`：API 响应正在进行中或不完整
+
+根据输入参数，模型响应可能包含不同的信息。
+
+## JSON mode
+
+一种常见的使用 Chat Completions 的方法是指示模型始终返回 JSON 对象，该对象在您的用例中有意义。虽然这在某些情况下有效，但偶尔模型会生成无法解析为有效 JSON 对象的输出。
+
+为了防止这些错误并提高模型性能，当调用 `gpt-4-turbo-preview` 或 `gpt-3.5-turbo-0125` 时，您可以通过将 `response_format` 设置为 `{"type": "json_object"}` 来启用 JSON 模式。启用 JSON 模式后，模型仅生成可解析为有效 JSON 对象的字符串。
+
+重要提示：
+
+- 当使用 JSON 模式时，始终在对话中指示模型生成 JSON，方法是在系统消息中包含显式指令。如果您忘记了，API 会抛出一个错误，因为字符串 `"JSON"` 没有出现在上下文中。
+- 如果 `finish_reason` 为 `length`，则消息可能是部分的（即被切断的），因为生成超过了 `max_tokens` 或对话超过了令牌限制。为了保护自己，在解析响应之前，请检查 `finish_reason`。
+- JSON 模式不保证输出匹配任何特定的架构，只保证它是有效的并且可以解析，而不会出现错误。
+
+以下是使用 JSON 模式的示例：
+```python
+import openai
+
+openai.api_key = "sk-your-api-key"
+
+response = openai.ChatCompletion.create(
+  model="gpt-3.5-turbo-0125",
+  response_format={ "type": "json_object" },
+  messages=[
+    {"role": "system", "content": "You are a helpful assistant designed to output JSON."},
+    {"role": "user", "content": "Who won the world series in 2020?"}
+  ]
+)
+
+print(response.choices[0].message.content)
+```
+在此示例中，响应包含一个类似于以下内容的 JSON 对象：
+```json
+"content": "{\"winner\": \"Los Angeles Dodgers\"}"
+```
+请注意，当模型生成函数参数作为[函数调用](/docs/guides/function-calling)的一部分时，始终启用 JSON 模式。
+
+## Reproducible outputs
+
+Chat Completions 默认情况下是非确定性的（这意味着模型输出可能因请求而异）。但是，我们提供对确定性输出的某些控制，方法是提供对 `seed` 参数和 `system_fingerprint` 响应字段的访问权限。
+
+要接收（大多数）确定性输出，您可以：
+
+1. 将 `seed` 参数设置为任意整数，并在希望接收确定性输出的所有请求中使用相同的值。
+2. 确保所有其他参数（如 `prompt` 或 `temperature`）在所有请求中都完全相同。
+
+有时，确定性可能会受到 OpenAI 对模型配置所做的必要更改的影响。为了帮助您跟踪这些更改，我们公开了 `system_fingerprint` 字段。如果此值不同，则可能会看到不同的输出，原因是我们在系统上进行了更改。
+
+要了解有关如何使用 `seed` 参数实现可重复的输出的更多信息，请参阅 OpenAI Cookbook 中的[如何使用 seed 参数实现可重复的输出](https://cookbook.openai.com/examples/reproducible_outputs_with_the_seed_parameter)。
+
+## Managing tokens
+
+语言模型以称为令牌的块读写文本。在英语中，令牌可能只有一个字符或一个单词（例如 `a` 或 `apple`），在某些语言中，令牌可能比一个字符更短或比一个单词更长。
+
+例如，字符串 `"ChatGPT is great!"` 被编码为六个令牌：`["Chat", "G", "PT", " is", " great", "!"]`。
+
+令牌的总数会影响：
+
+- 您的 API 调用的成本，因为您按令牌支付费用
+- 您的 API 调用所需的时间，因为写入更多令牌需要更多时间
+- 您的 API 调用是否有效，因为总令牌数必须低于模型的最大限制（对于 `gpt-3.5-turbo` 为 4097 个令牌）
+
+输入和输出令牌都计入这些量。例如，如果您的 API 调用使用了 10 个令牌的消息输入，并且您收到了 20 个令牌的消息输出，则将按 30 个令牌计费。但是，请注意，对于某些模型，输入令牌和输出令牌的价格可能不同（有关详细信息，请参阅[定价](https://openai.com/pricing)页面）。
+
+要查看 API 调用使用了多少令牌，请检查 API 响应中的 `usage` 字段（例如，`response['usage']['total_tokens']`）。
+
+Chat 模型（如 `gpt-3.5-turbo` 和 `gpt-4-turbo-preview`）使用令牌的方式与可用于完成 API 的模型相同，但是由于其基于消息的格式，因此更难计算对话将使用多少令牌。
+
+要了解有关如何计算令牌数量的更多信息，请参阅 OpenAI Cookbook 中的[如何使用 tiktoken 计算令牌](https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken)。
+
+每条消息传递给 API 时都会消耗消息中的令牌数量，角色和其他字段，加上一些用于背后格式化的额外令牌。这可能会在未来发生轻微变化。
+
+如果对话中的令牌太多，无法适应模型的最大限制（例如，`gpt-3.5-turbo` �� 4097 个令牌），则必须截断、省略或以其他方式缩小文本，直到它适合为止。请注意，如果从消息输入中删除消息，则模型将失去对它的了解。
+
+注意，非常长的对话更有可能收到不完整的回复。例如，`gpt-3.5-turbo` 的对话长达 4090 个令牌将在仅仅 6 个令牌后被切断。
+
+### Parameter details
+
+频率和存在惩罚可用于减少采样重复令牌序列的可能性。这些参数可以在[聊天完成 API](/docs/api-reference/chat/create) 和[遗留完成 API](/docs/api-reference/completions) 中找到。
+
+合理的惩罚系数值为 0.1 到 1，如果目的是仅仅减少重复采样。如果目的是强烈抑制重复，则可以将系数增加到 2，但这可能会明显降低采样的质量。负值可用于增加重复的可能性。
+
+### Token log probabilities
+
+`logprobs` 参数可用于请求每个输出令牌的对数概率，以及每个令牌位置处最可能的几个令牌及其对数概率。这在某些情况下可能有助于评估模型对其输出的信心，或者检查模型可能给出的替代响应。
+
+## Completions API
+
+完成 API 端点最后在 2023 年 7 月收到更新，并具有与新聊天完成端点不同的接口。输入不是消息列表，而是自由格式的文本字符串，称为 `prompt`。
+
+一个遗留完成 API 调用如下所示：
+```python
+import openai
+
+openai.api_key = "sk-your-api-key"
+
+response = openai.Completion.create(
+  model="gpt-3.5-turbo-instruct",
+  prompt="Write a tagline for an ice cream shop."
+)
+```
+有关详细信息，请参阅[完整的 API 参考文档](https://platform.openai.com/docs/api-reference/completions)。
+
+### Inserting text
+
+完成端点还支持通过提供 `suffix` 以及标准提示来插入文本，该提示被视为前缀。这种需求自然地出现在写长篇文章、过渡到新段落、遵循大纲或引导模型向结尾转移时。这也适用于代码，可用于在函数或文件的中间插入。
+
+## Chat Completions vs. Completions
+
+Chat Completions 格式可以通过构造使用单个用户消息的请求来使其类似于完成格式。例如，可以使用以下完成提示将英语翻译成法语：
+```
+Translate the following English text to French: "{text}"
+```
+等效的聊天提示如下：
+```json
+[{"role": "user", "content": 'Translate the following English text to French: "{text}"'}]
+```
+类似地，完成 API 可用于模拟用户和助手之间的聊天，方法是[
